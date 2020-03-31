@@ -125,7 +125,7 @@ background.fill((255,255,255))
 screen.blit(background, (0,0)) 
 
 snek = Snake()
-for i in range(150):
+for i in range(5):
     snek.add_element()
 
 FPS = 60
