@@ -1,4 +1,5 @@
 #This is updated version of Snake, it plays just like a regular snake
+#This version has some hard to grasp scripts like collision detection. Please only copy this code if you understand how it works
 import pygame
 import colorsys
 import random
