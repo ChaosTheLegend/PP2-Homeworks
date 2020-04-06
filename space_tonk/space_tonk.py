@@ -10,7 +10,7 @@ pygame.init()
 screen = pygame.display.set_mode((400,600))
 speed = 5
 imgdir = Path(os.getcwd())
-imgdir = os.path.join(imgdir,Path("space_tonk"))
+#imgdir = os.path.join(imgdir,Path("space_tonk"))
 
 
 tonkimg = pygame.image.load(os.path.join(imgdir,Path("spacetonk.png")))
