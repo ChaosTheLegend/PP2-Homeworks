@@ -11,15 +11,18 @@ pygame.init()
 screen = pygame.display.set_mode((800,600))
 speed = 5
 
+name = 'Vany'
+
 localplayer = {}
 
 class player():
-    def __init__(self,x,y,col):
+    def __init__(self,x,y,col,nick):
         self.x = x
         self.y = y
         self.col = col
         self.dx = 0
         self.dy = 0
+        self.nick = nick
 
     def implace(self,x,y):
         self.x = x
@@ -31,6 +34,12 @@ class player():
 
     def draw(self):
         pygame.draw.circle(screen, self.col, (int(self.x),int(self.y)), 10, 0)
+        font = pygame.font.Font('freesansbold.ttf', 14) 
+        text = font.render(self.nick, True, (255,255,255))
+        textRect = text.get_rect() 
+        textRect.center = (int(self.x), int(self.y-22))
+        screen.blit(text, textRect)
+        
     
 connection = pika.BlockingConnection(pika.ConnectionParameters('142.93.107.56'))
 prodchennel = connection.channel()
@@ -49,7 +58,7 @@ class Producer(Thread):
 
 class Consumer(Thread):
     def run(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters('142.93.107.56'))
         self.channel = connection.channel()
         self.channel.exchange_declare(exchange='logs',exchange_type='fanout')
         result = self.channel.queue_declare(queue='', exclusive=True)
@@ -60,12 +69,12 @@ class Consumer(Thread):
             parsedjs = json.loads(body)
             pl = parsedjs
             for k in pl:
-                if(k != 'Vany'):
+                if(k != name):
                     if k in players: 
-                        players[k].x = pl[k][x]
-                        players[k].y = pl[k][y]
+                        players[k].x = pl[k]['x']
+                        players[k].y = pl[k]['y']
                     else:
-                        newp = player(pl[k][x],pl[k][y],createcol(random.randrange(0,360)))
+                        newp = player(pl[k]['x'],pl[k]['y'],createcol(random.randrange(0,360)),k)
                         players[k] = newp
                         print(k+' Joined the game')
 
@@ -86,8 +95,8 @@ prd.start()
 con = Consumer()
 con.start()
 
-myplayer = player(100,100,createcol(5))
-players['Vany'] = myplayer
+myplayer = player(100,100,createcol(5),name)
+players[name] = myplayer
 
 klok = pygame.time.Clock()
 FPS = 60
@@ -123,13 +132,13 @@ while True:
                 myplayer.dy = 0
             
     myplayer.move()
-    players['Vany'] = myplayer
+    players[name] = myplayer
 
     screen.fill((0,0,0))
     for p in players.values():
         p.draw()
     
-    localplayer = {'Vany':{'x':myplayer.x,'y':myplayer.y}}
+    localplayer = {name:{'x':myplayer.x,'y':myplayer.y}}
     prd.sendmessage(json.dumps(localplayer))
     pygame.display.flip()
 
