@@ -1,1 +1,1 @@
-2nd version uses new way of rendering therefore greatly improving FPS
+2nd version uses new way of rendering text therefore greatly improving FPS
