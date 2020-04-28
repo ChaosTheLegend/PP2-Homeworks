@@ -2,6 +2,7 @@ import os
 import pymongo
 import ssl
 
+
 client = pymongo.MongoClient("mongodb+srv://VanyAdmin:Vanypass@cluster0-mhy2m.mongodb.net/test?retryWrites=true&w=majority")
 #print(client.list_database_names())
 db = client['TestBase']
@@ -11,7 +12,7 @@ table = db['MyDicks']
 clear = lambda: os.system('cls')
 clear()
 print('Welcome to big biba metagame!')
-print('Today we will finally find out who has the biggest biba on this pc!')
+print('Today we will finally find out who has the biggest biba of them all!')
 name = str(input('Please Enter your name:'))
 clear = lambda: os.system('cls')
 clear()
@@ -100,17 +101,24 @@ while(ans.lower() != 'yes' and hon.lower() != 'no'):
 if(ans.lower() == 'no'):
     exit()
 
+print('Connecting to the database...')
 hisdick = {'name': name, 'score': score}
-print(hisdick)
 table.insert_one(hisdick)
 dicks = table.find().sort('score',-1).limit(5)
 alldicks = table.find().sort('score',-1)
+dicks = list(dicks)
 place = 0
-for a in len(alldicks):
+alldicks = list(alldicks)
+for a in range(len(alldicks)):
     if(alldicks[a]['name'] == hisdick['name'] and alldicks[a]['score'] == hisdick['score']):
-        place = i+1
+        place = a+1
         break
 
-for i in len(dicks):
+clear = lambda: os.system('cls')
+clear()
+print('Scoreboard:')
+for i in range(len(dicks)):
     print(str(i+1)+': ' +dicks[i]['name']+' '+str(dicks[i]['score']))
-
+print('Your Score:')
+print(str(place) +': '+hisdick['name'] + ' ' +str(hisdick['score']))
+input('Press Enter to exit')
